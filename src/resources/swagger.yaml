@@ -1,0 +1,369 @@
+openapi: 3.0.0
+info:
+  title: API Gestão Financeira de Condomínio
+  version: 1.0.0
+  description: API REST para gestão financeira de condomínio
+servers:
+  - url: http://localhost:3000
+paths:
+  /users/search:
+    get:
+      summary: Consulta de usuários por nome ou email
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: nome
+          schema:
+            type: string
+        - in: query
+          name: email
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de usuários encontrados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /auth/login:
+    post:
+      summary: Login do usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                senha:
+                  type: string
+      responses:
+        '200':
+          description: Token JWT gerado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '400':
+          description: Email e senha são obrigatórios
+        '401':
+          description: Usuário não encontrado, inativo ou senha inválida
+  /users/register:
+    post:
+      summary: Cadastro de usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Usuário cadastrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Campos obrigatórios ausentes
+  /revenues/search:
+    get:
+      summary: Consulta de receitas por apartamento
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: apartamento
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de receitas encontradas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Revenue'
+  /users/{id}:
+    put:
+      summary: Alteração de usuário
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                email:
+                  type: string
+                senha:
+                  type: string
+                isAdmin:
+                  type: boolean
+                isActive:
+                  type: boolean
+      responses:
+        '200':
+          description: Usuário alterado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Usuário não encontrado
+  /expenses/register:
+    post:
+      summary: Cadastro de despesa
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expense'
+      responses:
+        '201':
+          description: Despesa cadastrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          description: Campos obrigatórios ausentes
+  /expenses/search:
+    get:
+      summary: Consulta de despesas por nome
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de despesas encontradas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+  /expenses/{id}:
+    put:
+      summary: Alteração de despesa
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                despesa:
+                  type: string
+                valor:
+                  type: number
+                data:
+                  type: string
+      responses:
+        '200':
+          description: Despesa alterada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '404':
+          description: Despesa não encontrada
+  /revenues/register:
+    post:
+      summary: Cadastro de receita
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Revenue'
+      responses:
+        '201':
+          description: Receita cadastrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Revenue'
+        '400':
+          description: Campos obrigatórios ausentes
+  /revenues/{id}:
+    put:
+      summary: Alteração de receita
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                apartamento:
+                  type: integer
+                cotaCondominial:
+                  type: number
+                cotaExtra:
+                  type: number
+                cotasVencidasAReceber:
+                  type: number
+                data:
+                  type: string
+      responses:
+        '200':
+          description: Receita alterada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Revenue'
+        '404':
+          description: Receita não encontrada
+  /summary/create:
+    post:
+      summary: Criar resumo da conta principal
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                month:
+                  type: string
+                previousBalance:
+                  type: number
+      responses:
+        '201':
+          description: Resumo criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Summary'
+        '400':
+          description: Campos obrigatórios ausentes
+  /summary:
+    get:
+      summary: Consultar resumo da conta principal
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: month
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resumo encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Summary'
+        '404':
+          description: Resumo não encontrado
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        nome:
+          type: string
+        email:
+          type: string
+        senha:
+          type: string
+        isAdmin:
+          type: boolean
+        isActive:
+          type: boolean
+    Expense:
+      type: object
+      properties:
+        id:
+          type: string
+        despesa:
+          type: string
+        valor:
+          type: number
+        data:
+          type: string
+    Revenue:
+      type: object
+      properties:
+        id:
+          type: string
+        apartamento:
+          type: integer  
+        cotaCondominial:
+          type: number
+        cotaExtra:
+          type: number
+        cotasVencidasAReceber:
+          type: number
+        data:
+          type: string
+    Summary:
+      type: object
+      properties:
+        month:
+          type: string
+        receitasRealizadas:
+          type: number
+        despesasRealizadas:
+          type: number
+        saldoAtual:
+          type: number
+        totalEmCaixa:
+          type: number
+        previousBalance:
+          type: number
