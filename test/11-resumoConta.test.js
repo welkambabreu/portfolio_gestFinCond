@@ -19,13 +19,13 @@ describe('Resumo Conta Principal', () => {
                 .set('Content-Type', 'application/json')
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    'month': 'outubro',
+                    'month': '2025-10',
                     'previousBalance': 1000
                 });
 
             expect(respostaCadResumo.status).to.equal(201);
             expect(respostaCadResumo.body).to.be.an('object');
-            expect(respostaCadResumo.body.month).to.equal('outubro');
+            expect(respostaCadResumo.body.month).to.equal('2025-10');
             expect(respostaCadResumo.body.previousBalance).to.equal(1000);
 
             console.log('Resumo cadastrado:', respostaCadResumo.body);
