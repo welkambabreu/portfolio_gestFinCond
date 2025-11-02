@@ -5,7 +5,7 @@ require('dotenv').config();
 const { obterToken } = require('../helpers/autenticacao')
 const app = require('../src/app');
 
-describe('Cadastro de Despesas', () => {
+describe('Cadastro de Despesa', () => {
     describe('POST /despesas', () => {
         let token;
 

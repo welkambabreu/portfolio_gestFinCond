@@ -5,7 +5,7 @@ require('dotenv').config();
 const { obterToken } = require('../helpers/autenticacao')
 const app = require('../src/app');
 
-describe('Consulta de Despesas', () => {
+describe('Consulta de Despesa', () => {
     describe('GET/expenses', () => {
         let token;
 
